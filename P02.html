@@ -67,7 +67,7 @@
             grid-template-rows: repeat(4, 80px);
             gap: 2px;
             /* 迷宮背景圖片 */
-            background-image: url("03.png"); 
+            background-image: url("/data/03.png"); 
             background-size: cover; 
             background-position: center;
             padding: 10px;
@@ -410,9 +410,9 @@
         const DIRECTIONS = ['⬆️', '➡️', '⬇️', '⬅️'];
         
         // 圖片 URL 修正為相對路徑
-        const ROBOT_IMAGE_URL = "01.png";
-        const TREASURE_IMAGE_URL = "02.png";
-        const TRAP_IMAGE_URL = "04.png"; // 障礙物圖片
+        const ROBOT_IMAGE_URL = "/data/01.png";
+        const TREASURE_IMAGE_URL = "/data/02.png";
+        const TRAP_IMAGE_URL = "/data/04.png"; // 障礙物圖片
 
         // 寶藏座標 (0, 3)
         const TREASURE_POS = { x: 0, y: 3 }; 
