@@ -68,7 +68,7 @@
             grid-template-rows: repeat(4, 80px);
             gap: 2px;
             /* 迷宮背景圖片 */
-            background-image: url("03.png"); 
+            background-image: url("./03.png"); 
             background-size: cover; 
             background-position: center;
             padding: 10px;
@@ -367,7 +367,7 @@
                     <div class="game-controls">
                         <button class="btn btn-primary" id="executeBtn">執行</button>
                         <button class="btn btn-secondary" id="resetBtn">重置</button>
-                        <a href="index.html" class="btn btn-home">🏠HOME</a>
+                        <a href="./index.html" class="btn btn-home">🏠HOME</a>
                     </div>
                 </div>
                 <div class="result-message" id="resultMessage"></div>
@@ -392,8 +392,8 @@
         const DIRECTIONS = ['⬆️', '➡️', '⬇️', '⬅️'];
 
         // 圖片 URL 修正為相對路徑
-        const ROBOT_IMAGE_URL = "01.png";
-        const TREASURE_IMAGE_URL = "02.png";
+        const ROBOT_IMAGE_URL = "./01.png";
+        const TREASURE_IMAGE_URL = ./"02.png";
 
         // 預設配置
         const defaultConfig = {
