@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>淡蘭試煉迷宮：結構挑戰</title>
+    <style>
+        body {
+            font-family: '微軟正黑體', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #c5d9e9 100%);
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a5568;
+            font-size: 32px;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        p {
+            color: #718096;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .activity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .activity-list li {
+            background-color: #ebf8ff; /* 淺藍色背景 */
+            border: 2px solid #90cdf4;
+            border-radius: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .activity-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(66, 153, 225, 0.3);
+        }
+
+        .activity-list a {
+            text-decoration: none;
+            color: #2b6cb0; /* 深藍色文字 */
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            padding: 20px;
+        }
+
+        .activity-list a::before {
+            content: "▶ ";
+            color: #4299e1;
+            margin-right: 10px;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 26px;
+            }
+            .activity-list a {
+                font-size: 18px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>淡蘭試煉迷宮：程式設計結構挑戰</h1>
+        <p>歡迎進入淡蘭試煉迷宮！請選擇您想要挑戰的關卡。</p>
+
+        <ul class="activity-list">
+            <li>
+                <a href="P01.html">
+                    第一關：循序結構 (Sequential Structure)
+                </a>
+            </li>
+            <li>
+                <a href="P02.html">
+                    第二關：重複結構 (Repetition Structure)
+                </a>
+            </li>
+            <li>
+                <a href="P03.html">
+                    第三關：選擇結構 (Selection Structure)
+                </a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

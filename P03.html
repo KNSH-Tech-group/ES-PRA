@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>淡蘭試煉迷宮：選擇結構</title>
+    
+    <style>
+        /* CSS 樣式定義 */
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 1200px; 
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .game-subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .main-content-wrapper {
+            display: flex;
+            gap: 30px; 
+            flex-wrap: wrap; 
+            justify-content: center;
+        }
+        
+        .maze-container {
+            flex-shrink: 0;
+            margin-bottom: 0; 
+        }
+
+        .controls-area-wrapper {
+            flex-grow: 1; 
+            min-width: 350px; 
+        }
+        
+        .maze-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-template-rows: repeat(4, 80px);
+            gap: 2px;
+            background-image: url("DATA/03.PNG"); 
+            background-size: cover; 
+            background-position: center;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .maze-cell {
+            background: transparent; 
+            border: 2px solid #FFF; 
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 24px;
+        }
+        
+        .trap-img {
+            max-width: 65%; 
+            max-height: 65%;
+            object-fit: contain;
+            opacity: 0.8;
+        }
+
+        .character-img {
+            max-width: 60%; 
+            max-height: 60%;
+            transition: transform 0.3s ease; 
+            object-fit: contain; 
+        }
+        
+        .treasure-img {
+            max-width: 70%; 
+            max-height: 70%; 
+            transition: transform 0.3s ease;
+            object-fit: contain; 
+        }
+        
+        .character {
+            position: absolute;
+	    transform: translate(15%, 0%);
+        }
+
+        .treasure {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 95%;
+            height: 95%;
+        }
+
+        .direction-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 12px;
+            display: block;
+        }
+
+        .controls-section {
+            margin-bottom: 20px; 
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .command-tokens {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-start; 
+            margin-bottom: 20px;
+        }
+
+        .command-token {
+            width: 70px; 
+            height: 70px; 
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            font-weight: bold;
+            font-size: 12px; 
+            text-align: center;
+            transition: all 0.2s ease;
+            border: 3px solid transparent;
+            line-height: 1.2; 
+        }
+
+        .command-token:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .command-token:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+        
+        .token-a { background: #48bb78; color: white; } 
+        .token-b { background: #ed8936; color: white; } 
+        .token-c { background: #4299e1; color: white; } 
+        .token-d { background: #9f7aea; color: white; } 
+
+
+        .sequence-area {
+            min-height: 60px; 
+            border: 3px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 10px; 
+            background: #f7fafc;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .sequence-area.drag-over {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .sequence-token {
+            width: 50px; 
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px; 
+            cursor: pointer;
+            position: relative;
+            line-height: 1.2;
+        }
+
+        .sequence-token .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-start; 
+            align-items: center;
+            margin-bottom: 0; 
+        }
+
+        .btn {
+            padding: 8px 24px; 
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #718096;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-2px);
+        }
+
+
+        /* === 新增 HOME 按鈕樣式 === */
+        .btn-home {
+            background: #DCDCDC; /* 白色 */
+            color: white;
+        }
+        
+        .btn-home:hover {
+            background: #DCDCDC;
+            transform: translateY(-2px);
+        }
+        /* === 結束 HOME 按鈕樣式 === */
+
+
+
+        .btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-area {
+            display: flex;
+            justify-content: flex-start; 
+            align-items: center;
+            background: transparent; 
+            padding: 0; 
+            border-radius: 0; 
+            margin-bottom: 20px;
+        }
+
+        .result-message {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 0; 
+            min-height: 20px;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+        }
+
+        .failure {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #e53e3e;
+        }
+
+        .empty-sequence {
+            color: #a0aec0;
+            font-style: italic;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title" id="gameTitle">淡蘭試煉迷宮：選擇結構</h1>
+        <p class="game-subtitle">請利用下列 4 種指令牌，引導<span id="characterName"> 小新 </span>取得寶藏。</p>
+        
+        <div class="main-content-wrapper">
+        
+            <div class="maze-container">
+                <div class="maze-grid" id="mazeGrid">
+                    </div>
+            </div>
+            
+            <div class="controls-area-wrapper">
+                <div class="controls-section">
+                    <div class="section-title">可用指令牌</div>
+                    <div class="command-tokens">
+                        <div class="command-token token-a" draggable="true" data-command="A">
+                            <div>A</div>
+                            <div>前進一格</div>
+                        </div>
+                        <div class="command-token token-b" draggable="true" data-command="B">
+                            <div>B</div>
+                            <div>原地左轉</div>
+                        </div>
+                        <div class="command-token token-c" draggable="true" data-command="C">
+                            <div>C</div>
+                            <div>前進；若前方沒路就左轉</div>
+                        </div>
+                        <div class="command-token token-d" draggable="true" data-command="D">
+                            <div>D</div>
+                            <div>前進；若前方沒路就右轉</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls-section">
+                    <div class="section-title">指令序列</div>
+                    <div class="sequence-area" id="sequenceArea">
+                        <div class="empty-sequence">將指令牌拖曳到這裡</div>
+                    </div>
+                </div>
+                
+                <div class="status-area">
+                    <div class="game-controls">
+                        <button class="btn btn-primary" id="executeBtn">執行</button>
+                        <button class="btn btn-secondary" id="resetBtn">重置</button>
+                        <a href="index.html" class="btn btn-home">🏠HOME</a>
+
+                    </div>
+                </div>
+                <div class="result-message" id="resultMessage"></div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script>
+        // 遊戲狀態 (Game State)
+        let gameState = {
+            // 1. 主角座標(2,3)
+            playerPos: { x: 2, y: 3 }, 
+            // 1. 面朝左 (對應 DIRECTIONS[3])
+            playerDirection: 3,      
+            // 初始旋轉 0 度，讓圖片面朝左
+            playerRotation: 0, 
+            sequence: [], 
+            isExecuting: false,
+            gameEnded: false
+        };
+
+        // 迷宮配置
+        const MAZE_SIZE = 4;
+        const DIRECTIONS = ['⬆️', '➡️', '⬇️', '⬅️'];
+        
+        const ROBOT_IMAGE_URL = "DATA/05.PNG";
+        const TREASURE_IMAGE_URL = "DATA/02.PNG";
+        const TRAP_IMAGE_URL = "DATA/04.PNG"; // 障礙物圖片
+
+        // 2. 寶藏座標(3,1)
+        const TREASURE_POS = { x: 3, y: 1 }; 
+
+        // 3. 障礙物座標清單 (5個)
+        const TRAPS = [
+            { x: 1, y: 0 }, 
+            { x: 3, y: 0 }, 
+            { x: 2, y: 2 }, 
+            { x: 0, y: 3 }, 
+            { x: 3, y: 3 }
+        ];
+
+        // 預設配置
+        const defaultConfig = {
+            game_title: "淡蘭試煉迷宮：選擇結構", 
+            character_name: " 小新 ",
+            success_message: "恭喜！ 小新 成功取得寶藏！"
+        };
+        
+        // 判斷一個位置是否為障礙物
+        function isObstacle(x, y) {
+             return TRAPS.some(trap => trap.x === x && trap.y === y);
+        }
+
+        // --- 核心遊戲函數 ---
+
+        function initMaze() {
+            const mazeGrid = document.getElementById('mazeGrid');
+            
+            mazeGrid.innerHTML = ''; 
+            
+            for (let row = 0; row < MAZE_SIZE; row++) {
+                for (let col = 0; col < MAZE_SIZE; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'maze-cell';
+                    cell.id = `cell-${row}-${col}`;
+                    
+                    // 障礙物圖片設定
+                    if (isObstacle(row, col)) {
+                         cell.innerHTML = `<img src="${TRAP_IMAGE_URL}" alt="障礙物" class="trap-img">`;
+                    }
+                    
+                    // 寶藏圖片設定
+                    if (row === TREASURE_POS.x && col === TREASURE_POS.y) {
+                         cell.innerHTML = `
+                            <span class="treasure">
+                                <img src="${TREASURE_IMAGE_URL}" alt="寶藏" class="treasure-img">
+                            </span>
+                        `;
+                    }
+                    
+                    mazeGrid.appendChild(cell);
+                }
+            }
+            
+            document.getElementById('characterName').textContent = defaultConfig.character_name;
+            document.getElementById('gameTitle').textContent = defaultConfig.game_title;
+            
+            // 放置初始角色
+            updatePlayerPosition();
+        }
+
+        function updatePlayerPosition() {
+            // 移除舊的角色和箭頭
+            document.querySelectorAll('.character').forEach(char => char.remove());
+            document.querySelectorAll('.direction-indicator').forEach(indicator => indicator.remove());
+            
+            const cell = document.getElementById(`cell-${gameState.playerPos.x}-${gameState.playerPos.y}`);
+            if (cell) {
+                // 不再檢查陷阱，障礙物僅阻止通行
+                const character = document.createElement('span');
+                character.className = 'character';
+                
+                character.innerHTML = `
+                    <img src="${ROBOT_IMAGE_URL}" alt="${defaultConfig.character_name}" class="character-img" id="playerImage">
+                `; 
+                
+                // 根據 playerRotation 旋轉圖片
+                const playerImage = character.querySelector('#playerImage');
+                if(playerImage) {
+                    playerImage.style.transform = `rotate(${gameState.playerRotation}deg)`;
+                }
+
+                const directionIndicator = document.createElement('span');
+                directionIndicator.className = 'direction-indicator';
+                directionIndicator.textContent = DIRECTIONS[gameState.playerDirection]; 
+                
+                cell.appendChild(character);
+                cell.appendChild(directionIndicator);
+            }
+        }
+
+        // 判斷是否為有效位置（在邊界內且非障礙物）
+        function isValidPosition(x, y) {
+            // 檢查是否在邊界內 
+            const inBounds = x >= 0 && x < MAZE_SIZE && y >= 0 && y < MAZE_SIZE;
+            
+            // 檢查是否為障礙物
+            if (inBounds && isObstacle(x, y)) {
+                return false; // 在邊界內但有障礙物，視為無效位置
+            }
+
+            return inBounds; // 在邊界內且無障礙物，視為有效位置
+        }
+
+        function getFrontPosition() {
+            const directions = [
+                { x: -1, y: 0 }, // 上 (0)
+                { x: 0, y: 1 },  // 右 (1)
+                { x: 1, y: 0 },  // 下 (2)
+                { x: 0, y: -1 }  // 左 (3)
+            ];
+            const dir = directions[gameState.playerDirection];
+            return {
+                x: gameState.playerPos.x + dir.x,
+                y: gameState.playerPos.y + dir.y
+            };
+        }
+
+        function setupDragAndDrop() {
+            const tokens = document.querySelectorAll('.command-token');
+            const sequenceArea = document.getElementById('sequenceArea');
+
+            tokens.forEach(token => {
+                token.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.dataset.command);
+                });
+                token.addEventListener('click', (e) => {
+                    const command = e.currentTarget.dataset.command;
+                    if (command && !gameState.isExecuting) { 
+                        addToSequence(command);
+                    }
+                });
+            });
+
+            sequenceArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                sequenceArea.classList.add('drag-over');
+            });
+            sequenceArea.addEventListener('dragleave', () => {
+                sequenceArea.classList.remove('drag-over');
+            });
+            sequenceArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                sequenceArea.classList.remove('drag-over');
+                const command = e.dataTransfer.getData('text/plain');
+                if (command && !gameState.isExecuting) {
+                    addToSequence(command);
+                }
+            });
+        }
+
+        function addToSequence(command) {
+            gameState.sequence.push(command);
+            updateSequenceDisplay();
+        }
+
+        window.removeFromSequence = function(index) {
+            if (!gameState.isExecuting) {
+                gameState.sequence.splice(index, 1);
+                updateSequenceDisplay();
+            }
+        }
+
+        function updateSequenceDisplay() {
+            const sequenceArea = document.getElementById('sequenceArea');
+            if (gameState.sequence.length === 0) {
+                sequenceArea.innerHTML = '<div class="empty-sequence">將指令牌拖曳到這裡</div>';
+                return;
+            }
+
+            sequenceArea.innerHTML = '';
+            gameState.sequence.forEach((command, index) => {
+                const commandText = {
+                    'A': '前進一格',
+                    'B': '原地左轉', 
+                    'C': '前進；若前方沒路就左轉', 
+                    'D': '前進；若前方沒路就右轉'
+                };
+                
+                const token = document.createElement('div');
+                token.className = `sequence-token token-${command.toLowerCase()}`;
+                token.innerHTML = `
+                    <div>${command}</div>
+                    <div style="font-size: 8px;">${commandText[command]}</div>
+                    <button class="remove-btn" onclick="removeFromSequence(${index})">×</button>
+                `;
+                sequenceArea.appendChild(token);
+            });
+        }
+        
+        async function executeAtomicCommand(command) {
+              return new Promise(resolve => {
+                  setTimeout(() => {
+                      if (gameState.gameEnded) {
+                          resolve();
+                          return;
+                      }
+                      
+                      let shouldMove = false;
+                      let shouldTurn = false;
+                      let turnDirection = null; 
+                      
+                      const frontPos = getFrontPosition();
+                      // 檢查前方是否有路（邊界內 且 非障礙物）
+                      const canMoveForward = isValidPosition(frontPos.x, frontPos.y); 
+                      
+                      // 檢查前方是否為邊界牆 (用於指令 A 的失敗判斷)
+                      const isWall = frontPos.x < 0 || frontPos.x >= MAZE_SIZE || frontPos.y < 0 || frontPos.y >= MAZE_SIZE;
+
+                      switch (command) {
+                          case 'A': // 前進一格
+                              if (canMoveForward) {
+                                  shouldMove = true;
+                              } else if (isWall) {
+                                  // 撞到邊界牆，遊戲失敗
+                                  gameState.gameEnded = true;
+                                  showResult(false, "撞到邊界！移動失敗！");
+                              } else {
+                                  // 撞到障礙物，停在原地，指令無效
+                              }
+                              break;
+                          case 'B': // 原地左轉
+                              shouldTurn = true;
+                              turnDirection = 'left';
+                              break;
+                          // 選擇結構指令 C: 前進；若前方沒路就左轉
+                          case 'C': 
+                              if (canMoveForward) {
+                                  shouldMove = true; // 前進
+                              } else {
+                                  shouldTurn = true; // 左轉
+                                  turnDirection = 'left'; 
+                              }
+                              break;
+                          // 選擇結構指令 D: 前進；若前方沒路就右轉
+                          case 'D': 
+                              if (canMoveForward) {
+                                  shouldMove = true; // 前進
+                              } else {
+                                  shouldTurn = true; // 右轉
+                                  turnDirection = 'right'; 
+                              }
+                              break;
+                      }
+                      
+                      if (shouldMove) {
+                           gameState.playerPos = frontPos;
+                      }
+                      
+                      if (shouldTurn) {
+                          if (turnDirection === 'left') {
+                              // 左轉 (逆時針)
+                              gameState.playerDirection = (gameState.playerDirection + 3) % 4;
+                              gameState.playerRotation -= 90; 
+                          } else if (turnDirection === 'right') {
+                              // 右轉 (順時針)
+                              gameState.playerDirection = (gameState.playerDirection + 1) % 4;
+                              gameState.playerRotation += 90; 
+                          }
+                      }
+                      
+                      updatePlayerPosition();
+                      
+                      // 檢查是否到達寶藏
+                      if (!gameState.gameEnded && gameState.playerPos.x === TREASURE_POS.x && gameState.playerPos.y === TREASURE_POS.y) {
+                          gameState.gameEnded = true;
+                          const config = window.elementSdk?.config || defaultConfig;
+                          showResult(true, config.success_message || defaultConfig.success_message);
+                      }
+                      
+                      resolve();
+                  }, 500); // 每次原子操作延遲 500ms
+              });
+        }
+        
+        async function executeSequence() {
+            if (gameState.sequence.length === 0 || gameState.isExecuting) return;
+            
+            gameState.isExecuting = true;
+            document.getElementById('executeBtn').disabled = true;
+            document.getElementById('resultMessage').textContent = '';
+            document.getElementById('resultMessage').className = 'result-message';
+
+            for (let index = 0; index < gameState.sequence.length && !gameState.gameEnded; index++) {
+                const command = gameState.sequence[index];
+                await executeAtomicCommand(command);
+            }
+            
+            gameState.isExecuting = false;
+            document.getElementById('executeBtn').disabled = false;
+            
+            if (!gameState.gameEnded) {
+                showResult(false, "指令執行完畢，還沒到達寶藏，試試調整指令序列！");
+            }
+        }
+
+        function showResult(success, message) {
+            const resultDiv = document.getElementById('resultMessage');
+            resultDiv.textContent = message;
+            resultDiv.className = `result-message ${success ? 'success' : 'failure'}`;
+        }
+
+        function resetGame() {
+            gameState = {
+                playerPos: { x: 2, y: 3 },
+                playerDirection: 3,
+                playerRotation: 0, 
+                sequence: [],
+                isExecuting: false,
+                gameEnded: false
+            };
+            
+            initMaze(); 
+            updateSequenceDisplay();
+            document.getElementById('resultMessage').textContent = '';
+            document.getElementById('resultMessage').className = 'result-message';
+            document.getElementById('executeBtn').disabled = false;
+        }
+
+        // --- 事件監聽器與初始化 ---
+        document.getElementById('executeBtn').addEventListener('click', executeSequence);
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 確保所有 DOM 元素準備好
+            
+            // 1. 執行初始化（繪製迷宮）
+            initMaze();
+            
+            // 2. 重置遊戲狀態至初始設定
+            resetGame();
+            
+            // 3. 綁定指令牌的點擊和拖曳事件 (確保元素已存在且狀態已重置)
+            setupDragAndDrop();
+        });
+    </script>
+</body>
+</html>
