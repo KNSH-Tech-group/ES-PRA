@@ -18,7 +18,7 @@
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 850px; 
             background-color: #ffffff;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -46,38 +46,73 @@
             padding: 0;
             margin: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: space-around;
             gap: 20px;
         }
 
         .activity-list li {
-            background-color: #ebf8ff; /* 淺藍色背景 */
+            background-color: #ebf8ff;
             border: 2px solid #90cdf4;
             border-radius: 12px;
             transition: transform 0.2s, box-shadow 0.2s;
+            flex: 1;
+            min-width: 80px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            /* 讓 li 內的 a 標籤內容置中 (間接置中圖片) */
+            align-items: center; 
+            text-align: center;
         }
 
         .activity-list li:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(66, 153, 225, 0.3);
         }
+        
+        .activity-list img {
+            display: block; 
+            margin: 0 auto; 
+            height: auto;
+            max-height: 80px; 
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            
+            object-fit: contain;
+            padding: 5px;
+        }
 
         .activity-list a {
             text-decoration: none;
-            color: #2b6cb0; /* 深藍色文字 */
+            color: #2b6cb0;
             font-size: 20px;
             font-weight: bold;
-            display: block;
-            padding: 20px;
+            display: flex; /* 讓 a 成為 flex 容器 */
+            flex-direction: column; /* 讓圖片和文字垂直排列 */
+            justify-content: center; /* 垂直置中 (文字與圖片) */
+            align-items: center; /* 水平置中 (文字與圖片) */
+            width: 100%; /* 確保 a 佔滿 li 的寬度 */
+            padding: 15px 10px; 
+            line-height: 1.4;
+            flex-grow: 1;
         }
 
         .activity-list a::before {
-            content: "▶ ";
-            color: #4299e1;
-            margin-right: 10px;
+            content: none;
         }
 
         /* 響應式設計 */
+        @media (max-width: 850px) {
+            .activity-list {
+                flex-direction: column;
+            }
+            .activity-list li {
+                min-width: unset;
+            }
+            .activity-list img {
+                 max-height: 200px; 
+            }
+        }
         @media (max-width: 600px) {
             .container {
                 padding: 30px 20px;
@@ -100,17 +135,20 @@
         <ul class="activity-list">
             <li>
                 <a href="P01.html">
-                    第一關：循序結構 (Sequential Structure)
+                    ★第一關：循序結構
+                    <img src=".//data/IL.png" alt="循序結構圖示">
                 </a>
             </li>
             <li>
                 <a href="P02.html">
-                    第二關：重複結構 (Repetition Structure)
+                    ★第二關：重複結構
+                    <img src=".//data/IM.png" alt="重複結構圖示">
                 </a>
             </li>
             <li>
                 <a href="P03.html">
-                    第三關：選擇結構 (Selection Structure)
+                    ★第三關：選擇結構
+                    <img src=".//data/IR.png" alt="選擇結構圖示">
                 </a>
             </li>
         </ul>
