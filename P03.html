@@ -142,20 +142,14 @@
         }
 
         .command-token {
-            width: 70px; 
-            height: 70px; 
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            width: 110px; 
+            height: 160px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             cursor: grab;
-            font-weight: bold;
-            font-size: 12px; 
-            text-align: center;
-            transition: all 0.2s ease;
-            border: 3px solid transparent;
-            line-height: 1.2; 
+            transition: transform 0.2s ease;
+            border-radius: 10px; 
         }
 
         .command-token:hover {
@@ -168,12 +162,24 @@
             transform: scale(0.95);
         }
         
-        .token-a { background: #48bb78; color: white; } 
-        .token-b { background: #ed8936; color: white; } 
-        .token-c { background: #4299e1; color: white; } 
-        .token-d { background: #9f7aea; color: white; } 
-
-
+        /* 指令牌顏色定義 */
+        .token-a {
+           background-image: url("./data/101.png"); /* A 前進 */
+         }
+        .token-b {
+           background-image: url("./data/102.png"); /* B 左轉 */
+         }
+		.token-c {
+          background-image: url("./data/301.png"); /* C 前進或左轉 */
+         } 
+        .token-d {
+           background-image: url("./data/302.png"); /* D 前進或右轉  */
+         }
+		/* ✅ 移除所有文字顯示 */
+		.command-token > div,
+         .sequence-token > div {
+           display: none !important;
+		 }
         .sequence-area {
             min-height: 60px; 
             border: 3px dashed #cbd5e0;
@@ -193,18 +199,13 @@
         }
 
         .sequence-token {
-            width: 50px; 
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 10px; 
+            width: 90px;
+            height: 130px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             cursor: pointer;
             position: relative;
-            line-height: 1.2;
         }
 
         .sequence-token .remove-btn {
